@@ -52,6 +52,11 @@ public class WebSecurityFilter {
                         // Public hotel browsing
                         .requestMatchers(
                                 HttpMethod.GET,
+                                "/hotels"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                HttpMethod.GET,
                                 "/hotels/search"
                         ).permitAll()
 

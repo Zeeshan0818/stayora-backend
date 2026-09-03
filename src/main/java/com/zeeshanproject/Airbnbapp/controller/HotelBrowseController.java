@@ -22,6 +22,17 @@ public class HotelBrowseController {
     private final InventoryService inventoryService;
     private final HotelService hotelService;
 
+    @GetMapping
+    public ResponseEntity<Page<HotelDto>> browseHotels(
+            @RequestParam(required = false) String city,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "9") Integer size
+    ) {
+        return ResponseEntity.ok(
+                hotelService.browseHotels(city, page, size)
+        );
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Page<HotelPriceDto>> searchHotels(
             @RequestParam String city,
