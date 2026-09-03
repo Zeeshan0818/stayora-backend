@@ -14,13 +14,26 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+
     @Override
     public User getUserbyId(Long id) {
-        return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User not found with Id: "+id));
+        return userRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found with Id: " + id
+                        )
+                );
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElse(null);
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
+
+        return userRepository.findByEmail(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "User not found with email: " + username
+                        )
+                );
     }
 }
