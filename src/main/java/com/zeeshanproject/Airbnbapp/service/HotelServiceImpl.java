@@ -124,12 +124,10 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Transactional
     public HotelDto updateHotelById(Long id, HotelDto hotelDto) {
 
-        log.info(
-                "Updating the hotel with ID: {}",
-                id
-        );
+        log.info("Updating the hotel with ID: {}", id);
 
         Hotel hotel = hotelRepository
                 .findById(id)
@@ -147,19 +145,25 @@ public class HotelServiceImpl implements HotelService {
         log.info("CURRENT USER ID: {}", user.getId());
         log.info("HOTEL OWNER ID: {}", hotel.getOwner().getId());
 
-        // Check ownership using user IDs
+        // Check ownership
         if (!user.getId().equals(hotel.getOwner().getId())) {
-
             throw new UnAutherisedException(
                     "This user does not own this hotel with id: " + id
             );
         }
 
-        modelMapper.map(hotelDto, hotel);
+        // Update only fields that are allowed to change
+        hotel.setName(hotelDto.getName());
+        hotel.setCity(hotelDto.getCity());
+        hotel.setPhotos(hotelDto.getPhotos());
+        hotel.setAmenities(hotelDto.getAmenities());
+        hotel.setHotelContactinfo(hotelDto.getHotelContactinfo());
 
-        hotel.setId(id);
+        // DO NOT change owner or active status here
 
         hotel = hotelRepository.save(hotel);
+
+        log.info("Hotel {} updated successfully", id);
 
         return modelMapper.map(hotel, HotelDto.class);
     }
